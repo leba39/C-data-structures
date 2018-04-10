@@ -21,6 +21,7 @@ void printStack(struct node* head){
 
 void push(struct node **head, int new_data)
 {
+    if (!head)	return;
     struct node *new = (struct node*)malloc(sizeof(struct node));
     new->data = new_data;
     new->next = NULL;
@@ -40,7 +41,7 @@ void push(struct node **head, int new_data)
 
 void pop(struct node **head)
 {
-    if(!(*head))
+    if(!head||!(*head))	//evalua de izqda a derecha. Si le cambio el orden da SEG FAULT.
     {
         return;
     }
@@ -67,7 +68,8 @@ int main(){
 	
 	//errorCheck
 	pop(&stackHead);
-
+	pop(NULL);
+	push(NULL,1);
 	//PUSHs
 	push(&stackHead,1);
 	push(&stackHead,2);
