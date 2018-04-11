@@ -66,10 +66,10 @@ int main(){
 	//EMPTY NULL NODE POINTER
 	struct node* stackHead = NULL;
 	
-	//errorCheck
+	//errorChecks
 	pop(&stackHead);
 	pop(NULL);
-	push(NULL,1);
+	push(NULL,0);
 	//PUSHs
 	push(&stackHead,1);
 	push(&stackHead,2);
@@ -77,26 +77,20 @@ int main(){
 	push(&stackHead,4);
 	push(&stackHead,5);
 	push(&stackHead,6);
-
 	//PRINT STACK
 	printf("STACK STATUS:\n");
 	printStack(stackHead);
-
 	//POPs
-
 	pop(&stackHead);
 	pop(&stackHead);
 	pop(&stackHead);
 	pop(&stackHead);
 	pop(&stackHead);
-	
 	//PRINT STACK
 	printf("STACK STATUS:\n");
 	printStack(stackHead);	//should be one element remaining.
-
 	//FINAL POP
 	pop(&stackHead);
-	
 	//PRINT STACK
 	printf("STACK STATUS:\n");
 	printStack(stackHead);	//should be empty.
