@@ -49,7 +49,7 @@ void pop(struct node **head)
     {
         free(*head);
         *head = NULL;
-	return;
+	    return;
     }
     struct node *ptr = *head;
     while(ptr->next->next)

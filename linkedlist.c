@@ -11,7 +11,10 @@ void print_list(struct node* head){
 		
 	struct node* pointer = head;
 	int i = 1;
-	if (!pointer) return;
+	if (!pointer||!pointer->data) {
+        printf("Lista vacia!\n");
+        return;
+    }
 	do{
 		printf("Elemento %d:	%d\n",i,pointer->data);
 		pointer = pointer->next;
@@ -21,10 +24,12 @@ void print_list(struct node* head){
 
 void add_end_list(struct node **head, int new_data)
 {
+    
+    if(!head)   return;
     struct node *new = (struct node*)malloc(sizeof(struct node));
     new->data = new_data;
     new->next = NULL;
-    if(!head)
+    if(!(*head))
     {
        *head = new;
        return;
@@ -40,6 +45,7 @@ void add_end_list(struct node **head, int new_data)
 
 void add_front_list(struct node **head, int new_data)
 {
+    if(!head)   return;
     struct node *new = (struct node*)malloc(sizeof(struct node));
     new->data = new_data;
     new->next = *head;
@@ -49,7 +55,7 @@ void add_front_list(struct node **head, int new_data)
 
 void delete_end_list(struct node **head)
 {
-    if(!(*head))
+    if(!head||!(*head)) //evaluates left->right. SEG FAULT if we changed positions.
     {
         return;
     }
@@ -57,6 +63,7 @@ void delete_end_list(struct node **head)
     {
         free(*head);
         *head = NULL;
+        return;
     }
     struct node *ptr = *head;
     while(ptr->next->next)
@@ -70,7 +77,7 @@ void delete_end_list(struct node **head)
 
 void delete_front_list(struct node **head){
     
-	if(!(*head)) return;	//we dont delete from an empty list.
+	if(!head||!(*head)) return;	//we dont delete from an empty list.Evaluates from left->right. SEG FAULT otherwise.
 
 	if(!(*head)->next){		//list with one element.
 		free(*head);
@@ -83,51 +90,37 @@ void delete_front_list(struct node **head){
 	//free(*head);
 	*head = (*head)->next;
 	free(pointer);
+    return;
 }
 	
 int main(){
 
-	struct node* head = (struct node*)malloc(sizeof(struct node));
-	head->data = 0;
-	head->next = NULL;
+	struct node* head = NULL;
 	
-	struct node* head_one_element = (struct node*)malloc(sizeof(struct node));
-	head_one_element->data = 0;
-	head_one_element->next = NULL;
-
-	struct node* head_empty = NULL;
-
-	add_end_list(&head,1);
-	add_end_list(&head,2);
-	add_end_list(&head,3);
+	
+    //ADDING ELEMENTS FRONT AND END:
+    add_end_list(&head,4);
 	add_end_list(&head,5);
-	add_end_list(&head,8);
-	add_end_list(&head,13);
-
-	//first print. Multiple element list.
-	printf("FIRST PRINT. INSERTS.\n");
+	add_end_list(&head,6);
+    add_front_list(&head,3);
+    add_front_list(&head,2);
+    add_front_list(&head,1);
+	//PRINT LIST
+	printf("LINKED LIST STATUS:\n");
 	print_list(head);
-
-	//remove from end. Multiple element list
-	//delete_end_list(&head);
-	//print_list(head);
-
-	//remove from beginning. Multiple element list
+	//REMOVING ELEMENTS FRONT-END ALTERNATIVELY
 	delete_front_list(&head);
-	
-	printf("SECOND PRINT. ONE DELETE.\n");
-	print_list(head);	//Same list but without '0'.
-
+	delete_end_list(&head);
 	delete_front_list(&head);
+	//PRINT LIST
+	printf("LINKED LIST STATUS:\n");
+	print_list(head);
+    //UNTIL EMPTY LIST
+    delete_end_list(&head);
 	delete_front_list(&head);
-	delete_front_list(&head);
-	delete_front_list(&head);
-	delete_front_list(&head);
-	delete_front_list(&head);
-	
-	delete_front_list(&head_one_element); 
-	
-	printf("THIRD PRINT. DELETED ALL.\n");
+	delete_end_list(&head);
+	//PRINT LIST
+	printf("LINKED LIST STATUS:\n");    //should be empty
 	print_list(head);
 
 	return 0;
