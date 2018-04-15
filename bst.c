@@ -7,6 +7,7 @@
 
 struct node{
     int data;
+    char count;
     struct node* left;
     struct node* right;
 };
@@ -21,6 +22,7 @@ void insertValue(struct node** head, int new_data){
 
     struct node *new = (struct node*)malloc(sizeof(struct node));
     new->data  = new_data;
+    new->count = 1;
     new->left  = NULL;
     new->right = NULL;
 
@@ -34,6 +36,11 @@ void insertValue(struct node** head, int new_data){
     struct node* navigator = *head;
     struct node* nextMove  = NULL;
     do{
+        if(navigator->data == new_data){
+            navigator->count++;    
+            free(new);
+            return;
+        }
         nextMove  = ((navigator->data) > new_data) ? (navigator->left) : (navigator->right);
         if(nextMove!=NULL)   navigator = nextMove;    
     }while(nextMove);   
@@ -55,6 +62,7 @@ int main(){
     insertValue(&head,20);
     insertValue(&head,60);
     insertValue(&head,10);
+    insertValue(&head,15);
     insertValue(&head,15);
     insertValue(&head,80);
     insertValue(&head,70);
