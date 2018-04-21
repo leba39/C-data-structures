@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <time.h>       //for srand
 
-
+//S T R U C T
 struct node{
     int data;
     char count;
@@ -15,10 +15,40 @@ struct node{
     struct node* right;
 };
 
+//F U N C T I O N s
+void insertValue(struct node** head,int new_data);
+void deleteValue(struct node** head,int target_value);
+void print_tree(struct node *bst, int indent);
 
-void insertValue(struct node** head, int new_data){
+//M A I N
+int main(){
 
+    //MATOROs TEST
+    srand(time(NULL));
+    int values[10];
+    struct node *head = NULL;
+    for(int i = 0; i < 10; i++)
+    {
+        values[i] = rand() % 100;
+        insertValue(&head, values[i]);
+    }
+    //print completed BST
+    print_tree(head,0);
+
+    for(int i = 0; i < 10; i++)
+    {
+        deleteValue(&head, values[i]);
+        //print current BST after each delete
+        printf("------------------\n");     
+        print_tree(head,0);
+    }
     
+    return 0;
+}
+
+//I M P L E M E N T A T I O N s
+void insertValue(struct node** head,int new_data){
+
 
     //NULL HEAD POINTER
     if(!head)   return;
@@ -61,11 +91,12 @@ void insertValue(struct node** head, int new_data){
 void deleteValue(struct node** head,int target_value){
     
     if(!head || !(*head))   return; //evaluates left to right, avoids segfault.
-    struct node* navigator = *head;
+    struct node* navigator       = *head;
     struct node* parentNavigator = navigator;
-    struct node* nextMove  = NULL;
-    bool moveLeft;
+    struct node* nextMove        = NULL;
+    bool moveLeft                = false;
 
+    //WE TRY TO FIND TARGET VALUE:
     do{
         if(navigator->data == target_value) break;
         
@@ -79,23 +110,27 @@ void deleteValue(struct node** head,int target_value){
             printf("Target value (%d) is not in the given BST.\n",target_value);
             return;
         }
-    }while(nextMove);   //se podria hacer infinito while() ??
-
-    //IF WE REACH THIS POINT WE HAVE FOUND THE TARGET VALUE. *NAVIGATOR holds that node.
-        //we decrease count and return.
+    }while(true);
+    
+    /*
+        IF WE REACH THIS POINT WE HAVE FOUND THE TARGET VALUE. *NAVIGATOR holds that node:
+    */
+        
+    //Decrease count and return if there are duplicates.
     if ((navigator->count)>1){ 
             navigator->count -= 1;
             return;
     }
 
-        //CASUISTICA: CHILD-LESS NODE.
+    /*----CASUISTICA: CHILD-LESS NODE----*/
     if(navigator->left == NULL && navigator->right == NULL){
-        
-        if(navigator == parentNavigator){
+
+        if(navigator == parentNavigator){   
+            //Last node of the BST.
             free(navigator);
-            *head = NULL; //importante navigator = NULL no funcionaba igual
-            return;
-        }else{ 
+            *head = NULL;                   //Important! navigator = NULL didn't work as expected!
+        }else{
+            //Generic childless node. 
             free(navigator);
             navigator = NULL;
             if(moveLeft){
@@ -103,227 +138,97 @@ void deleteValue(struct node** head,int target_value){
             }else{
                 parentNavigator->right = NULL;
             }
-            return;
         }
+        return;
     }
 
-        //CASUISTICA: NODE HAS ONE CHILD.
+    /*---- CASUISTICA: NODE HAS ONE CHILD----*/
     if(navigator->left == NULL && navigator->right != NULL){
         
+        //We are dealing with the HEAD node.
         if(navigator == parentNavigator){
-            //HEAD.
             *head = navigator->right;
             free(navigator);
             navigator = NULL;
             return;
         }
-
+        //Generic one-child node.
         if(moveLeft){
-    
             parentNavigator->left = navigator->right;
             free(navigator);
             navigator = NULL;
-            return;
         }else{
-            
             parentNavigator->right = navigator->right;
             free(navigator);
             navigator = NULL;
-            return;    
         }
+        return;
+
     }else if(navigator->left != NULL && navigator->right == NULL){
         
+        //We are dealing with the HEAD node.
         if(navigator == parentNavigator){
-            //HEAD.
             *head = navigator->left;
             free(navigator);
             navigator = NULL;
             return;
         }
-        
+        //Generic one-child node.
         if(moveLeft){
-
             parentNavigator->left = navigator->left;
             free(navigator);
             navigator = NULL;
-            return;
         }else{
-        
             parentNavigator->right = navigator->left;
             free(navigator);
             navigator = NULL;
-            return;
         }
+        return;
     }    
 
-/*
-    FIXEAR LA CASUISTICA PARA EL NODO CON DOS CHILDREN: SEGUIR LA PAGINA MATORO.
-*/
-
-
-    //CASUISTICA: NODE HAS TWO CHILDREN
-
+    /*----CASUISTICA: NODE HAS TWO CHILDREN----*/
     if(navigator->left != NULL && navigator->right != NULL){
+        //AUX LOCAL VARs
         struct node* aux;    
         moveLeft = false;
-        //we go down one right and then all left. We keep going down the left branch until we hit NULL
+        /*
+            We go down one right and then all left. We keep going down the left branch until we hit NULL.
+            That is, we find the min value from the right sub-tree.
+        */
         nextMove = navigator->right;    
         do{
             aux = parentNavigator;
             parentNavigator = nextMove;
             nextMove = nextMove->left;
-            if(nextMove)     moveLeft = true;    //we moved left from the right subtree atleast once.
+            if(nextMove)     moveLeft = true;    //We moved left from the right subtree atleast once.
         }while(nextMove != NULL);
 
-        if(!moveLeft){ //If the min from the right subtree is the first node from it.
-            
+        //If the min from the right subtree is the first node we encounter. We didn't move 'left' once.
+        if(!moveLeft){
             navigator->data  = parentNavigator->data;
             navigator->count = parentNavigator->count; 
             navigator->right = parentNavigator->right;
             free(parentNavigator);
             parentNavigator  = NULL;
-            return;
         }else{
-                
             navigator->data  = parentNavigator->data;
             navigator->count = parentNavigator->count;    
             aux->left = (parentNavigator->right) ? parentNavigator->right : NULL;
             free(parentNavigator);
             parentNavigator  = NULL;
-            return;
         }
+        return;
     }
 }
 
 void print_tree(struct node *bst, int indent){
     
     if(!bst){
-        fprintf(stdout, "Lista vacia\n");
+        fprintf(stdout, "Lista vacia\n");   //Empty list.
         return;
     }
-
-    for(int i = 0; i < indent; i++)
-    {
-        fprintf(stdout, "\t");
-    }
+    for(int i = 0; i < indent; i++)     fprintf(stdout, "\t");
     fprintf(stdout, "%i\n", bst->data);
-    if(bst->left)
-    {
-        print_tree(bst->left, indent + 1);
-    }
-    if(bst->right)
-    {
-        print_tree(bst->right, indent + 1);
-    }
-}
-
-int main(){
-
-    
-/*
-    struct node* head = NULL;
-    insertValue(&head,50);
-    insertValue(&head,20);
-    insertValue(&head,60);
-    insertValue(&head,55);
-    insertValue(&head,10);
-    insertValue(&head,15);
-    insertValue(&head,15);
-    insertValue(&head,80);
-    insertValue(&head,70);
-    insertValue(&head,90);
-    insertValue(&head,75);
-    insertValue(&head,72);
-    print_tree(head,0);
-    //DELETE
-    deleteValue(&head,55);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    //DELETE
-    deleteValue(&head,70);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    //DELETE
-    deleteValue(&head,15);
-    printf("------------15 menos una--------------------\n");
-    print_tree(head,0);
-    //DELETE
-    deleteValue(&head,15);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    deleteValue(&head,155);
-    //DELETE
-    deleteValue(&head,80);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    //DELETE
-    insertValue(&head,55);
-    insertValue(&head,74);
-    deleteValue(&head,60);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    //DELETE
-    deleteValue(&head,50);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-    //DELETE
-    deleteValue(&head,55);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-    
-    //DELETE
-    deleteValue(&head,90);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-    //DELETE
-    deleteValue(&head,20);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-    //DELETE
-    deleteValue(&head,10);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-    //DELETE
-    deleteValue(&head,72);
-    printf("--------------------------------\n");
-    print_tree(head,0);
- 
-    //DELETE
-    deleteValue(&head,74);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-    //DELETE
-    deleteValue(&head,75);
-    printf("--------------------------------\n");
-    print_tree(head,0);
-
-
-*/
-        
-    //MATOROs TEST
-    srand(time(NULL));
-    int values[10];
-    struct node *head = NULL;
-    for(int i = 0; i < 10; i++)
-    {
-        values[i] = rand() % 100;
-        insertValue(&head, values[i]);
-    }
-
-    print_tree(head,0);
-
-    for(int i = 0; i < 10; i++)
-    {
-        deleteValue(&head, values[i]);
-        printf("------------------\n");
-        print_tree(head,0);
-    }
-    
-
-    return 0;
+    if(bst->left)       print_tree(bst->left, indent + 1);
+    if(bst->right)      print_tree(bst->right, indent + 1);
 }
