@@ -37,6 +37,34 @@ int main(){
     srand(time(NULL));
     int values[10];
     struct node *head = NULL;
+
+
+    //single rotation test. Data structures book.
+
+    insert_value(&head,3);
+    print_tree(head,0);
+    
+    insert_value(&head,2);
+    print_tree(head,0);
+    
+    insert_value(&head,1);
+    print_tree(head,0);
+    
+    insert_value(&head,4);
+    print_tree(head,0);
+    
+    insert_value(&head,5);
+    print_tree(head,0);
+    
+    insert_value(&head,6);
+    print_tree(head,0);
+    
+    insert_value(&head,7);
+    print_tree(head,0);
+
+
+    
+/*    
     for(int i = 0; i < 10; i++)
     {
         values[i] = rand() % 100;
@@ -52,7 +80,7 @@ int main(){
         printf("------------------\n");     
         print_tree(head,0);
     }
-    
+*/  
     return 0;
 }
 
@@ -69,7 +97,8 @@ void insert_value(struct node** head,int new_data){
     new->left  = NULL;
     new->right = NULL;
     new->height = 0;    //height is 0 for childless nodes, -1 for empty or non-existent nodes
-    
+
+
     //EMPTY HEAD POINTER
     if (!(*head)){
         *head = new;
@@ -104,10 +133,11 @@ void insert_value(struct node** head,int new_data){
         int child_balance     = abs(calc_height(balanced_tree->right)-calc_height(balanced_tree->left));
         if(child_balance>1){    //tree is not balanced at this node
             unbalance = true;
+            break;
         }else{                  //if it is balanced we keep going down we hit navigator* (insert node)
             balanced_tree = ((balanced_tree->data) > new_data) ? (balanced_tree->left) : (balanced_tree->right);
         }
-    }while((balanced_tree != navigator)||(unbalance))
+    }while((balanced_tree != NULL));
 
     if(unbalance)   rebalance(&balanced_tree);    
 
@@ -258,19 +288,21 @@ void delete_value(struct node** head,int target_value){
     }
 
 
-    CHECKBALANCE: 
+    CHECKBALANCE: ; //empty statement so I can close the scope and declare variables.
     //UPDATE AND CHECK BALANCE FACTOR (HEIGHT)        
-    struct node* balanced_tree = *head;    
+    struct node *balanced_tree = *head;
     bool unbalance = false;
+
     do{
         balanced_tree->height = calc_height(balanced_tree);
         int child_balance     = abs(calc_height(balanced_tree->right)-calc_height(balanced_tree->left));
         if(child_balance>1){    //tree is not balanced at this node
             unbalance = true;
+            break;
         }else{                  //if it is balanced we keep going down we hit NULL following the same steps as we did in order find the target_value
             balanced_tree = ((balanced_tree->data) > target_value) ? (balanced_tree->left) : (balanced_tree->right);
         }
-    }while((balanced_tree != NULL)||(unbalance))
+    }while((balanced_tree != NULL));
 
     if(unbalance)   rebalance(&balanced_tree);    
 
@@ -320,7 +352,7 @@ void rotate_left_child(struct node **node){
     childless->left  = NULL;
     childless->right = NULL;
     *node = rotational;
-    *node->right = childless;
+    (*node)->right = childless;
     
     return;
 }
@@ -336,7 +368,7 @@ void rotate_right_child(struct node **node){
     childless->left  = NULL;
     childless->right = NULL;
     *node = rotational;
-    *node->left = childless;
+    (*node)->left = childless;
     
     return;
 }
@@ -362,8 +394,8 @@ int calc_height(struct node *node){
     int left_branch     = calc_height(node->left) + 1;
     int right_branch    = calc_height(node->right) + 1;
 
-    node->height = (left_branch > right branch) ? left_branch : right_branch;
-    return (left_branch > right branch) ? left_branch : right_branch;
+    node->height = (left_branch > right_branch) ? left_branch : right_branch;
+    return (left_branch > right_branch) ? left_branch : right_branch;
 }
 
 void print_tree(struct node *bst, int indent){
