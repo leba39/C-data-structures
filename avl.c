@@ -126,20 +126,20 @@ void insert_value(struct node** head,int new_data){
     }
 
     //UPDATE AND CHECK BALANCE FACTOR (HEIGHT)        
-    struct node* balanced_tree = *head;    
+    struct node** balanced_tree = head;   
     bool unbalance = false;
     do{
-        balanced_tree->height = calc_height(balanced_tree);
-        int child_balance     = abs(calc_height(balanced_tree->right)-calc_height(balanced_tree->left));
+        (*balanced_tree)->height = calc_height(*balanced_tree);
+        int child_balance     = abs(calc_height((*balanced_tree)->right)-calc_height((*balanced_tree)->left));
         if(child_balance>1){    //tree is not balanced at this node
             unbalance = true;
             break;
         }else{                  //if it is balanced we keep going down we hit navigator* (insert node)
-            balanced_tree = ((balanced_tree->data) > new_data) ? (balanced_tree->left) : (balanced_tree->right);
+            balanced_tree = ((*balanced_tree)->data > new_data) ? &(*balanced_tree)->left : &(*balanced_tree)->right;
         }
-    }while((balanced_tree != NULL));
+    }while((*balanced_tree) != NULL);
 
-    if(unbalance)   rebalance(&balanced_tree);    
+    if(unbalance)   rebalance(balanced_tree);  
 
     return;
 }
@@ -330,7 +330,7 @@ void rebalance(struct node **node){
 
         sub_node = (*node)->right;
 
-        if(calc_height(sub_node->right)-calc_height(sub_node->left)==1){    //right-right insert    -> single rotation.
+        if(calc_height(sub_node->right)-calc_height(sub_node->left)>=1){    //right-right insert    -> single rotation.
             rotate_right_child(node);
         }else{                                                              //right-left insert     -> double rotation.  
         //must be -1
@@ -350,7 +350,7 @@ void rotate_left_child(struct node **node){
     struct node *rotational = (*node)->left;
 
     childless->left  = NULL;
-    childless->right = NULL;
+    //childless->right = NULL;
     *node = rotational;
     (*node)->right = childless;
     
@@ -365,7 +365,7 @@ void rotate_right_child(struct node **node){
     struct node *childless  = *node;
     struct node *rotational = (*node)->right;
 
-    childless->left  = NULL;
+    //childless->left  = NULL;
     childless->right = NULL;
     *node = rotational;
     (*node)->left = childless;
