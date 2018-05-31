@@ -76,6 +76,22 @@ int main(){
     insert_value(&head,85);
     print_tree(head,0);
 
+    //DELETE
+
+    delete_value(&head,10);
+    print_tree(head,0);
+
+    delete_value(&head,30);
+    print_tree(head,0);
+
+    delete_value(&head,85);
+    print_tree(head,0);
+
+    delete_value(&head,90);
+    print_tree(head,0);
+
+        //probar deletes de head, hacer deletes del resto. valgrind y matoro.
+
     
 /*    
     for(int i = 0; i < 10; i++)
@@ -141,19 +157,16 @@ void insert_value(struct node** head,int new_data){
     //UPDATE AND CHECK BALANCE FACTOR (HEIGHT)        
     struct node** balanced_tree     = head; 
     struct node** unbalanced_node   = NULL;  
-    //bool unbalance = false;
     do{
         (*balanced_tree)->height = calc_height(*balanced_tree);
         int child_balance     = abs(calc_height((*balanced_tree)->right)-calc_height((*balanced_tree)->left));
         if(child_balance>1){    //tree is not balanced at this node
-            //unbalance = true;
             unbalanced_node = balanced_tree;      
         }
         balanced_tree = ((*balanced_tree)->data > new_data) ? &(*balanced_tree)->left : &(*balanced_tree)->right;
         
     }while((*balanced_tree) != NULL);
 
-    //if(unbalance)   rebalance(balanced_tree);  
     if(unbalanced_node) rebalance(unbalanced_node);     //will send closest unbalanced node (+-2) from the bottom up.
 
     return;
@@ -304,22 +317,21 @@ void delete_value(struct node** head,int target_value){
 
 
     CHECKBALANCE: ; //empty statement so I can close the scope and declare variables.
+    
     //UPDATE AND CHECK BALANCE FACTOR (HEIGHT)        
-    struct node *balanced_tree = *head;
-    bool unbalance = false;
-
+    struct node** balanced_tree     = head; 
+    struct node** unbalanced_node   = NULL;  
     do{
-        balanced_tree->height = calc_height(balanced_tree);
-        int child_balance     = abs(calc_height(balanced_tree->right)-calc_height(balanced_tree->left));
+        (*balanced_tree)->height = calc_height(*balanced_tree);
+        int child_balance     = abs(calc_height((*balanced_tree)->right)-calc_height((*balanced_tree)->left));
         if(child_balance>1){    //tree is not balanced at this node
-            unbalance = true;
-            break;
-        }else{                  //if it is balanced we keep going down we hit NULL following the same steps as we did in order find the target_value
-            balanced_tree = ((balanced_tree->data) > target_value) ? (balanced_tree->left) : (balanced_tree->right);
+            unbalanced_node = balanced_tree;      
         }
-    }while((balanced_tree != NULL));
+        balanced_tree = ((*balanced_tree)->data > target_value) ? &(*balanced_tree)->left : &(*balanced_tree)->right;
+        
+    }while((*balanced_tree) != NULL);
 
-    if(unbalance)   rebalance(&balanced_tree);    
+    if(unbalanced_node) rebalance(unbalanced_node);     //will send closest unbalanced node (+-2) from the bottom up.
 
     return;
 }
@@ -328,27 +340,34 @@ void rebalance(struct node **node){
 
     if(!node||!(*node)) return;    
 
+    //VARs
+    int balance_factor;
     struct node *sub_node;
 
-    if(calc_height((*node)->right)-calc_height((*node)->left)==-2){          //LEFT subtree unbalanced
+
+    balance_factor = calc_height((*node)->right)-calc_height((*node)->left);
+
+    if(balance_factor==-2){                                                 //LEFT subtree unbalanced
         
-        sub_node = (*node)->left;        
+        sub_node        = (*node)->left;
+        balance_factor  = calc_height(sub_node->right)-calc_height(sub_node->left);       
     
-        if(calc_height(sub_node->right)-calc_height(sub_node->left)==-1){   //left-left insert  -> single rotation.
+        if(balance_factor==-1||balance_factor==0){                          //left-left insert  -> single rotation.
             rotate_left_child(node);
         }else{                                                              //left-right insert -> double rotation.
-            //must be 1
+            //bf must be 1
             double_left_child(node);
         }
     }else{                                                                  //RIGHT subtree unbalanced
-    //must be 2
+    //bf must be 2
 
         sub_node = (*node)->right;
-
-        if(calc_height(sub_node->right)-calc_height(sub_node->left)==1){    //right-right insert    -> single rotation.
+        balance_factor  = calc_height(sub_node->right)-calc_height(sub_node->left); 
+        
+        if(balance_factor==1||balance_factor==0){                           //right-right insert    -> single rotation.
             rotate_right_child(node);
         }else{                                                              //right-left insert     -> double rotation.  
-        //must be -1
+        //bf must be -1
             double_right_child(node);
         }
     }
