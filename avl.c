@@ -41,35 +41,40 @@ int main(){
 
     //single rotation test. Data structures book.
 
-    insert_value(&head,3);
+    insert_value(&head,30);
     print_tree(head,0);
     
-    insert_value(&head,2);
+    insert_value(&head,20);
     print_tree(head,0);
     
-    insert_value(&head,1);
+    insert_value(&head,10);
     print_tree(head,0);
     
-    insert_value(&head,4);
+    insert_value(&head,40);
     print_tree(head,0);
     
-    insert_value(&head,5);
+    insert_value(&head,50);
     print_tree(head,0);
     
-    insert_value(&head,6);
+    insert_value(&head,60);
     print_tree(head,0);
     
-    insert_value(&head,7);
+    insert_value(&head,70);
     print_tree(head,0);
 
     //double rotation test.
 
-    insert_value(&head,9);
+    insert_value(&head,90);
     print_tree(head,0);
 
-    insert_value(&head,8);
+    insert_value(&head,80);
     print_tree(head,0);
 
+    insert_value(&head,65);
+    print_tree(head,0);
+
+    insert_value(&head,85);
+    print_tree(head,0);
 
     
 /*    
