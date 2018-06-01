@@ -38,100 +38,27 @@ int main(){
     int values[10];
     struct node *head = NULL;
 
-
-    //single rotation test. Data structures book.
-
-    insert_value(&head,30);
-    print_tree(head,0);
     
-    insert_value(&head,20);
-    print_tree(head,0);
-    
-    insert_value(&head,10);
-    print_tree(head,0);
-    
-    insert_value(&head,40);
-    print_tree(head,0);
-    
-    insert_value(&head,50);
-    print_tree(head,0);
-    
-    insert_value(&head,60);
-    print_tree(head,0);
-    
-    insert_value(&head,70);
-    print_tree(head,0);
-
-    //double rotation test.
-
-    insert_value(&head,90);
-    print_tree(head,0);
-
-    insert_value(&head,80);
-    print_tree(head,0);
-
-    insert_value(&head,65);
-    print_tree(head,0);
-
-    insert_value(&head,85);
-    print_tree(head,0);
-
-    //DELETE
-
-    delete_value(&head,10);
-    print_tree(head,0);
-
-    delete_value(&head,30);
-    print_tree(head,0);
-
-    delete_value(&head,85);
-    print_tree(head,0);
-
-    delete_value(&head,90);
-    print_tree(head,0);
-
-        //probar deletes de head, hacer deletes del resto. valgrind y matoro.
-    delete_value(&head,40);
-    print_tree(head,0);
-
-    delete_value(&head,20);
-    print_tree(head,0);
-
-    delete_value(&head,60);
-    print_tree(head,0);
-
-    delete_value(&head,50);
-    print_tree(head,0);
-
-    delete_value(&head,65);
-    print_tree(head,0);
-
-    delete_value(&head,70);
-    print_tree(head,0);
-
-    delete_value(&head,80);
-    print_tree(head,0);
-
-
-
-    
-/*    
+    fprintf(stdout,"\n\n\tBUILDING TREE\n\n");   
     for(int i = 0; i < 10; i++)
     {
         values[i] = rand() % 100;
         insert_value(&head, values[i]);
+        fprintf(stdout,"------------------------------------\n");     
+        print_tree(head,0);
+
     }
     //print completed BST
-    print_tree(head,0);
+    fprintf(stdout,"\n\n\tTREE COMPLETED. REMOVING...\n\n");
 
     for(int i = 0; i < 10; i++)
     {
         delete_value(&head, values[i]);
         //print current BST after each delete
-        printf("------------------\n");     
+        fprintf(stdout,"------------------------------------\n"); 
         print_tree(head,0);
     }
-*/  
+  
     return 0;
 }
 
