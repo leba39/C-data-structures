@@ -91,6 +91,28 @@ int main(){
     print_tree(head,0);
 
         //probar deletes de head, hacer deletes del resto. valgrind y matoro.
+    delete_value(&head,40);
+    print_tree(head,0);
+
+    delete_value(&head,20);
+    print_tree(head,0);
+
+    delete_value(&head,60);
+    print_tree(head,0);
+
+    delete_value(&head,50);
+    print_tree(head,0);
+
+    delete_value(&head,65);
+    print_tree(head,0);
+
+    delete_value(&head,70);
+    print_tree(head,0);
+
+    delete_value(&head,80);
+    print_tree(head,0);
+
+
 
     
 /*    
@@ -321,6 +343,8 @@ void delete_value(struct node** head,int target_value){
     //UPDATE AND CHECK BALANCE FACTOR (HEIGHT)        
     struct node** balanced_tree     = head; 
     struct node** unbalanced_node   = NULL;  
+    if(!(*balanced_tree))   return;//removal of last node needs no balance
+
     do{
         (*balanced_tree)->height = calc_height(*balanced_tree);
         int child_balance     = abs(calc_height((*balanced_tree)->right)-calc_height((*balanced_tree)->left));
