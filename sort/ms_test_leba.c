@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <time.h>
-#define N 10
 
 //DECLARATION
 void merge(int* arr, int* tmp, int left, int center, int right);
@@ -12,31 +12,29 @@ int* mergeSort(int *arr, int length);
 void doMergeSort(int *arr, int *tmp, int left, int right);
 void testSort(int* arr, int length);
 
-int main(){
+int main(int argc, char** argv){
 
     //VARs
-    int random_arr[N];
-    int single_arr[1];
-    int same_arr[N];
-    int* empty_arr;
+    int* random_arr = NULL, len, number = 0;
+    char *num;
 
-
-    srand(time(NULL));
-    
-    //DEF
-    single_arr[0] = rand()%100;
-    empty_arr     = NULL;
-    for(int i=0; i<N; i++){
-        
-        same_arr[i]     = single_arr[0];
-        random_arr[i]   = rand()%100;
+    //CLA
+    if(argc!=2) return -1;  //takes only one input value from CLA.
+    num = argv[1];
+    len = strlen(num);
+    for(int i=0; i<len;i++) number = number*10 + (num[i]-'0');
+    //RND
+    if(number>0){
+        printf("CREATING RANDOM ARRAY OF N: %d\n",number);
+        random_arr = (int*)malloc(sizeof(int)*number);
     }
-
+    //DEF
+    srand(time(NULL));
+    for(int i=0; i<number; i++)  random_arr[i]   = rand()%100;
+    
     //TEST
-    testSort(random_arr,N);    
-    testSort(same_arr,N);    
-    testSort(empty_arr,N);    
-    testSort(single_arr,1);    
+    testSort(random_arr,number);    
+    free(random_arr);
 
     return 0;
 }
