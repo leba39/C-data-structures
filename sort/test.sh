@@ -31,8 +31,8 @@ do
     echo "PASS NUMBER: $n > N=$start"
     echo "INPUT N: $start" | tee -a $bbl_out $leba_out >> $morton_out
     (time ./bbl $start) > /dev/null 2>> $bbl_out
-    (time ./ms_leba $n) > /dev/null 2>> $leba_out
-    (time ./ms_morton $n) > /dev/null 2>> $morton_out
+    (time ./ms_leba $start) > /dev/null 2>> $leba_out
+    (time ./ms_morton $start) > /dev/null 2>> $morton_out
 
     start=$[start*multiply]
 done
